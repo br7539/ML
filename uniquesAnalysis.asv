@@ -2,8 +2,10 @@
 % Compares uniques between annotators
 
 %% Import data
-c = importdata('2015-07-11_G-002_consensus.swc');
-c = struct2cell(c) ; c = c{1} ; 
+[c,delimiterOut,headerOut] = importdata('2015-07-11_G-002_consensus.swc',' ');
+c
+
+
 
 
 %% Drawing
