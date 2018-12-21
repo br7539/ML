@@ -49,6 +49,6 @@ df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-06-14'])
 # loops over dictionary of sheets
 for sheet_i, df in df_multiple.items():
         
-    speed, assist_manual = ns.segmentV_speed_single(df)
-    print(sheet_i, speed)
+    manual, assist_manual = ns.segmentV_speed_single(df)
+    print(sheet_i, manual)
     print(sheet_i, assist_manual)

@@ -94,12 +94,11 @@ def segmentV_speed_single(df):
     for index, row in df.iterrows():        
         
         # if same neuron (sequential) 
-        if df.iloc[index]['Neuron Name'] == df.iloc[index+1]['Neuron Name']:
-            
-            # do if individual neuron is completed and speed is annotated
-            if df.iloc[index]['Neuron Status'] == 'Completed' and \
-            not np.isnan(df.iloc[index]['Speed (mm/hr)']):
-
+        if df.iloc[index]['Neuron Name'] == df.iloc[index-1]['Neuron Name']:           
+            # do if individual both neurons is completed and speed is annotated
+            if df.iloc[index]['Neuron Status'] == 'Completed' and df.iloc[index-1]['Neuron Status'] == 'Completed' and\
+            not np.isnan(df.iloc[index]['Speed (mm/hr)']) and not np.isnan(df.iloc[index-1]['Speed (mm/hr)']):
+        
                 # neuron 1
                 if df.iloc[index]['Segment Ver.'] == "Manual":
                     manual.append(df.iloc[index]['Speed (mm/hr)'])
@@ -108,17 +107,16 @@ def segmentV_speed_single(df):
                 if df.iloc[index]['Segment Ver.'] == 'De-Novo Merge':
                     frags.append(df.iloc[index]['Speed (mm/hr)']) 
                 if df.iloc[index]['Segment Ver.'] == 'Assisted Merge':
-                    assist_frags.append(df.iloc[index]['Speed (mm/hr)']) 
-                               
+                    assist_frags.append(df.iloc[index]['Speed (mm/hr)'])                               
                 # neuron 2                                    
-                if df.iloc[index+1]['Segment Ver.'] == 'Manual':
-                    manual.append(df.iloc[index+1]['Speed (mm/hr)'])
-                if df.iloc[index+1]['Segment Ver.'] == 'Assisted Manual':
-                    assist_manual.append(df.iloc[index+1]['Speed (mm/hr)'])
-                if df.iloc[index+1]['Segment Ver.'] == 'De-Novo Merge':
-                    frags.append(df.iloc[index+1]['Speed (mm/hr)'])
-                if df.iloc[index+1]['Segment Ver.'] == 'Assisted Merge':
-                    assist_frags.append(df.iloc[index+1]['Speed (mm/hr)'])
+                if df.iloc[index-1]['Segment Ver.'] == 'Manual':
+                    manual.append(df.iloc[index-1]['Speed (mm/hr)'])
+                if df.iloc[index-1]['Segment Ver.'] == 'Assisted Manual':
+                    assist_manual.append(df.iloc[index-1]['Speed (mm/hr)'])
+                if df.iloc[index-1]['Segment Ver.'] == 'De-Novo Merge':
+                    frags.append(df.iloc[index-1]['Speed (mm/hr)'])
+                if df.iloc[index-1]['Segment Ver.'] == 'Assisted Merge':
+                    assist_frags.append(df.iloc[index-1]['Speed (mm/hr)'])
                     
     # Calculate average speed over segment versions
 #    manual_speed = np.average(manual)
