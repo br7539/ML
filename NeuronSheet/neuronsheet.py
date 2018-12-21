@@ -13,52 +13,9 @@ import matplotlib.pyplot as plt
 # Import and Clean File
 # =============================================================================
 
-#def clean_sheet(file, sheets):
-#    "This functions cleans and returns dictionary of sheets (requires all neuron status fields\
-#    to be a string."
-#    
-#    # import file
-#    df_multiple = pd.read_excel(file, sheets)
-#    
-#    # loops over dictionary of sheets
-#    for sheet_i, df in df_multiple.items():
-#    
-#        # Fill missing row values
-#        for index, row in df.iterrows():
-#            if isinstance(row['Neuron Name'],str):
-#                neuron = row['Neuron Name']
-#            else:
-#                df.loc[index,'Neuron Name']= neuron
-#            if isinstance(row['Soma Compartment'], str):
-#                soma = row['Soma Compartment']
-#            else:
-#                df.loc[index,'Soma Compartment']= soma
-#                soma = None
-#            if isinstance(row['Neuron Status'],str):
-#                status = row['Neuron Status']
-#            else:
-#                df.loc[index,'Neuron Status']= status
-#            if isinstance(row['Dendrites'],str):
-#                dendrites = row['Dendrites']
-#            else:
-#                df.loc[index,'Dendrites']= dendrites
-#            if isinstance(row['In Database'],str):
-#                database = row['In Database']
-#            else:
-#                df.loc[index,'In Database']= database
-#            if isinstance(row['Database ID'],str):
-#                _id = row['Database ID']
-#            else:
-#                df.loc[index,'Database ID']= _id
-#                _id = None
-#    # dictionary of dataframes (key = sheet)       
-#    return df_multiple
-
-
 def clean_sheet(file, sheets):
     "This functions cleans and returns dictionary of sheets (requires correct excell dimentions)"
-
-    
+   
     # import file
     df_multiple = pd.read_excel(file, sheets)
     
@@ -96,7 +53,6 @@ def clean_sheet(file, sheets):
                 if isinstance(df.iloc[index-1]['Database ID'],str) and \
                 not isinstance(df.iloc[index]['Database ID'],str):
                     df.loc[index,'Database ID']= df.iloc[index-1]['Database ID']
-
 
     # dictionary of dataframes (key = sheet)
     return df_multiple
