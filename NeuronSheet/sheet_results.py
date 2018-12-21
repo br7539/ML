@@ -13,7 +13,7 @@ import neuronsheet as ns
 
 #df_multiple = ns.clean_sheet('Active_Neuron_Worksheet.xlsx', ['2018-04-03','2018-04-13'])
 #
-#annotator = 'Bruno'
+#annotator = 'Cameron'
 #
 ## loops over dictionary of sheets
 #for sheet_i, df in df_multiple.items():
@@ -49,6 +49,6 @@ df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-06-14'])
 # loops over dictionary of sheets
 for sheet_i, df in df_multiple.items():
         
-    manual, assist_manual = ns.segmentV_speed_single(df)
-    print(sheet_i, manual)
-    print(sheet_i, assist_manual)
+    toss, seg_lists = ns.segmentV_speed_single(df)
+    print(sheet_i, seg_lists[0])
+    print(sheet_i, seg_lists[1])

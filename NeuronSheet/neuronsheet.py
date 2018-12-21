@@ -5,17 +5,59 @@ Neuron Sheet Analysis
 This script parses and provides analysis for the neuron worksheet.
 """
 
-import matplotlib as plt
-import numpy as np
 import pandas as pd
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 # =============================================================================
 # Import and Clean File
 # =============================================================================
 
+#def clean_sheet(file, sheets):
+#    "This functions cleans and returns dictionary of sheets (requires all neuron status fields\
+#    to be a string."
+#    
+#    # import file
+#    df_multiple = pd.read_excel(file, sheets)
+#    
+#    # loops over dictionary of sheets
+#    for sheet_i, df in df_multiple.items():
+#    
+#        # Fill missing row values
+#        for index, row in df.iterrows():
+#            if isinstance(row['Neuron Name'],str):
+#                neuron = row['Neuron Name']
+#            else:
+#                df.loc[index,'Neuron Name']= neuron
+#            if isinstance(row['Soma Compartment'], str):
+#                soma = row['Soma Compartment']
+#            else:
+#                df.loc[index,'Soma Compartment']= soma
+#                soma = None
+#            if isinstance(row['Neuron Status'],str):
+#                status = row['Neuron Status']
+#            else:
+#                df.loc[index,'Neuron Status']= status
+#            if isinstance(row['Dendrites'],str):
+#                dendrites = row['Dendrites']
+#            else:
+#                df.loc[index,'Dendrites']= dendrites
+#            if isinstance(row['In Database'],str):
+#                database = row['In Database']
+#            else:
+#                df.loc[index,'In Database']= database
+#            if isinstance(row['Database ID'],str):
+#                _id = row['Database ID']
+#            else:
+#                df.loc[index,'Database ID']= _id
+#                _id = None
+#    # dictionary of dataframes (key = sheet)       
+#    return df_multiple
+
+
 def clean_sheet(file, sheets):
-    "This functions cleans and returns dictionary of sheets"
+    "This functions cleans and returns dictionary of sheets (requires all neuron status fields\
+    to be a string."
     
     # import file
     df_multiple = pd.read_excel(file, sheets)
@@ -25,34 +67,37 @@ def clean_sheet(file, sheets):
     
         # Fill missing row values
         for index, row in df.iterrows():
-            if isinstance(row['Neuron Name'],str):
-                neuron = row['Neuron Name']
-            else:
-                df.loc[index,'Neuron Name']= neuron
-            if isinstance(row['Soma Compartment'], str):
-                soma = row['Soma Compartment']
-            else:
-                df.loc[index,'Soma Compartment']= soma
-                soma = None
-            if isinstance(row['Neuron Status'],str):
-                status = row['Neuron Status']
-            else:
-                df.loc[index,'Neuron Status']= status
-            if isinstance(row['Dendrites'],str):
-                dendrites = row['Dendrites']
-            else:
-                df.loc[index,'Dendrites']= dendrites
-            if isinstance(row['In Database'],str):
-                database = row['In Database']
-            else:
-                df.loc[index,'In Database']= database
-            if isinstance(row['Database ID'],str):
-                _id = row['Database ID']
-            else:
-                df.loc[index,'Database ID']= _id
-                _id = None
+            
+            if isinstance(df.iloc[index-1]['Neuron Name'],str) and \
+            not isinstance(df.iloc[index]['Neuron Name'],str):
+                df.loc[index,'Neuron Name']= df.iloc[index-1]['Neuron Name']
+#            else:
+#                df.loc[index,'Neuron Name']= neuron
+#            if isinstance(row['Soma Compartment'], str):
+#                soma = row['Soma Compartment']
+#            else:
+#                df.loc[index,'Soma Compartment']= soma
+#                soma = None
+#            if isinstance(row['Neuron Status'],str):
+#                status = row['Neuron Status']
+#            else:
+#                df.loc[index,'Neuron Status']= status
+#            if isinstance(row['Dendrites'],str):
+#                dendrites = row['Dendrites']
+#            else:
+#                df.loc[index,'Dendrites']= dendrites
+#            if isinstance(row['In Database'],str):
+#                database = row['In Database']
+#            else:
+#                df.loc[index,'In Database']= database
+#            if isinstance(row['Database ID'],str):
+#                _id = row['Database ID']
+#            else:
+#                df.loc[index,'Database ID']= _id
+#                _id = None
     # dictionary of dataframes (key = sheet)       
     return df_multiple
+
 
 # =============================================================================
 # Functions for whole samples
@@ -118,14 +163,17 @@ def segmentV_speed_single(df):
                 if df.iloc[index-1]['Segment Ver.'] == 'Assisted Merge':
                     assist_frags.append(df.iloc[index-1]['Speed (mm/hr)'])
                     
-    # Calculate average speed over segment versions
-#    manual_speed = np.average(manual)
-#    assist_manual_speed = np.average(assist_manual)
-#    frags_speed = np.average(frags)
-#    assist_frags_speed = np.average(assist_frags)
-    # list of segment speeds
-    return  manual, assist_manual
-#[manual_speed, assist_manual_speed, frags_speed, assist_frags_speed],
+    #Calculate average speed over segment versions
+    manual_speed = np.average(manual)
+    assist_manual_speed = np.average(assist_manual)
+    frags_speed = np.average(frags)
+    assist_frags_speed = np.average(assist_frags)
+    
+    # [segment speeds], [segment lists]
+    return [manual_speed, assist_manual_speed, frags_speed, assist_frags_speed]\
+    ,[manual, assist_manual, frags, assist_frags] 
+        
+
 
 def length_total(df):
     "Length of completed neurons (w/ duplicates)"
@@ -162,24 +210,6 @@ def neuron_status(df):
 
     return incomplete, untraceable
 
-
-# def get_neuron_coord(df, feature0, feature1, feature2, feature3):
-#     'Creates a list of neuron features'
-#
-#     coord, features_list = [], []
-#
-#     # Iterate over dataframe
-#     for index, row in df.iterrows():
-#         # check neuron status
-#         if row['Segment Ver.'] == 'Manual' and row['Annotator Progress'] == feature0:
-#             coord.append(row['Neuron Location (µm)'])
-#             features_list.append(row['Annotator Progress'])
-#         if row['Segment Ver.'] == 'Manual' and row['Annotator Progress'] == feature1 or \
-#         row['Annotator Progress'] == feature2 or row['Annotator Progress'] == feature3:
-#             feature_list.append(row['Neuron Location (µm)'])
-#             features_list.append(row['Annotator Progress'])
-#
-#     return coord, features_list
 
 # =============================================================================
 # Functions for individuals
@@ -244,22 +274,3 @@ def graph_annotator_progress(df, annotator):
     plt.close()
     
     return
-
-
-# =============================================================================
-# Results
-# =============================================================================
-
-#df_multiple = clean_sheet('Active_Neuron_Worksheet.xlsx', ['2018-04-03','2018-04-13'])
-#
-#annotator = 'Bruno'
-#
-## loops over dictionary of sheets
-#for sheet_i, df in df_multiple.items():
-#        
-#    print(sheet_i, '\n',annotator)
-#    graph_annotator_progress(df, annotator)
-    
- 
-
-        
