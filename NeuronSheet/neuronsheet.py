@@ -56,8 +56,8 @@ import matplotlib.pyplot as plt
 
 
 def clean_sheet(file, sheets):
-    "This functions cleans and returns dictionary of sheets (requires all neuron status fields\
-    to be a string."
+    "This functions cleans and returns dictionary of sheets (requires correct excell dimentions)"
+
     
     # import file
     df_multiple = pd.read_excel(file, sheets)
@@ -67,35 +67,38 @@ def clean_sheet(file, sheets):
     
         # Fill missing row values
         for index, row in df.iterrows():
-            
+            # if same neuron
             if isinstance(df.iloc[index-1]['Neuron Name'],str) and \
-            not isinstance(df.iloc[index]['Neuron Name'],str):
+            not isinstance(df.iloc[index]['Neuron Name'],str) and \
+            df.iloc[index-1]['Neuron Name'] != df.iloc[index]['Neuron Name']:
                 df.loc[index,'Neuron Name']= df.iloc[index-1]['Neuron Name']
-#            else:
-#                df.loc[index,'Neuron Name']= neuron
-#            if isinstance(row['Soma Compartment'], str):
-#                soma = row['Soma Compartment']
-#            else:
-#                df.loc[index,'Soma Compartment']= soma
-#                soma = None
-#            if isinstance(row['Neuron Status'],str):
-#                status = row['Neuron Status']
-#            else:
-#                df.loc[index,'Neuron Status']= status
-#            if isinstance(row['Dendrites'],str):
-#                dendrites = row['Dendrites']
-#            else:
-#                df.loc[index,'Dendrites']= dendrites
-#            if isinstance(row['In Database'],str):
-#                database = row['In Database']
-#            else:
-#                df.loc[index,'In Database']= database
-#            if isinstance(row['Database ID'],str):
-#                _id = row['Database ID']
-#            else:
-#                df.loc[index,'Database ID']= _id
-#                _id = None
-    # dictionary of dataframes (key = sheet)       
+                # add soma compartment
+                if isinstance(df.iloc[index-1]['Soma Compartment'],str) and \
+                not isinstance(df.iloc[index]['Soma Compartment'],str):
+                    df.loc[index,'Soma Compartment']= df.iloc[index-1]['Soma Compartment']
+                # add coordinate
+                if isinstance(df.iloc[index-1]['Neuron Location (µm)'],str) and \
+                not isinstance(df.iloc[index]['Neuron Location (µm)'],str):
+                    df.loc[index,'Neuron Location (µm)']= df.iloc[index-1]['Neuron Location (µm)']                    
+                # add neuron status
+                if isinstance(df.iloc[index-1]['Neuron Status'],str) and \
+                not isinstance(df.iloc[index]['Neuron Status'],str):
+                    df.loc[index,'Neuron Status']= df.iloc[index-1]['Neuron Status']        
+                # add dendrites
+                if isinstance(df.iloc[index-1]['Dendrites'],str) and \
+                not isinstance(df.iloc[index]['Dendrites'],str):
+                    df.loc[index,'Dendrites']= df.iloc[index-1]['Dendrites']
+                # add database status
+                if isinstance(df.iloc[index-1]['In Database'],str) and \
+                not isinstance(df.iloc[index]['In Database'],str):
+                    df.loc[index,'In Database']= df.iloc[index-1]['In Database']
+                # add database id
+                if isinstance(df.iloc[index-1]['Database ID'],str) and \
+                not isinstance(df.iloc[index]['Database ID'],str):
+                    df.loc[index,'Database ID']= df.iloc[index-1]['Database ID']
+
+
+    # dictionary of dataframes (key = sheet)
     return df_multiple
 
 
@@ -162,6 +165,7 @@ def segmentV_speed_single(df):
                     frags.append(df.iloc[index-1]['Speed (mm/hr)'])
                 if df.iloc[index-1]['Segment Ver.'] == 'Assisted Merge':
                     assist_frags.append(df.iloc[index-1]['Speed (mm/hr)'])
+                    
                     
     #Calculate average speed over segment versions
     manual_speed = np.average(manual)

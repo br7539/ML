@@ -44,7 +44,7 @@ import neuronsheet as ns
 # Compare segment
 # =============================================================================
     
-df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-06-14'])
+df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-08-01','2018-06-14'])
 
 # loops over dictionary of sheets
 for sheet_i, df in df_multiple.items():
