@@ -41,14 +41,19 @@ import neuronsheet as ns
 
 
 # =============================================================================
-# Compare segment
+# Compare segments
 # =============================================================================
     
 df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-08-01','2018-06-14'])
 
+# declare variables
+list_of_tuples = []
+
 # loops over dictionary of sheets
 for sheet_i, df in df_multiple.items():
-        
+    # get segment tuple 
     toss, seg_lists = ns.segmentV_speed_single(df)
-    print(sheet_i, seg_lists[0])
-    print(sheet_i, seg_lists[1])
+    manual = (sheet_i, seg_lists[0])
+    print(manual)
+    #print(sheet_i, seg_lists[1])    # assisted manual list
+    

@@ -99,7 +99,7 @@ def segmentV_speed_single(df):
         
         # if same neuron (sequential) 
         if df.iloc[index]['Neuron Name'] == df.iloc[index-1]['Neuron Name']:           
-            # do if individual both neurons is completed and speed is annotated
+            # do if both tracings are completed and speed is annotated
             if df.iloc[index]['Neuron Status'] == 'Completed' and df.iloc[index-1]['Neuron Status'] == 'Completed' and\
             not np.isnan(df.iloc[index]['Speed (mm/hr)']) and not np.isnan(df.iloc[index-1]['Speed (mm/hr)']):
         
