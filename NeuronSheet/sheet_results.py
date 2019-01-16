@@ -44,7 +44,7 @@ import neuronsheet as ns
 # Compare segments
 # =============================================================================
     
-df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-08-01','2018-06-14'])
+df_multiple = ns.clean_sheet('Finished_Worksheet.xlsx', ['2018-08-01','2018-07-02','2018-03-09','2017-11-17'])
 
 # declare variables
 list_of_tuples = []
@@ -52,8 +52,11 @@ list_of_tuples = []
 # loops over dictionary of sheets
 for sheet_i, df in df_multiple.items():
     # get segment tuple 
-    toss, seg_lists = ns.segmentV_speed_single(df)
-    manual = (sheet_i, seg_lists[0])
-    print(manual)
-    #print(sheet_i, seg_lists[1])    # assisted manual list
+    seg_speeds, seg_lists = ns.segmentV_speed_single(df)
+    manual,assist_manual = (sheet_i, seg_lists[0]),(sheet_i, seg_lists[1])
+    manual_speed, assist_manual_speed = (sheet_i, seg_speeds[0]),(sheet_i, seg_speeds[1])
+    
+    print(sheet_i,'\n')
+    print('manual: ', manual,'\n', 'average manual speed: ', manual_speed, '\n')
+    print('assist manual: ', assist_manual,'\n', 'average assist manual speed: ', assist_manual_speed,'\n\n')
     
