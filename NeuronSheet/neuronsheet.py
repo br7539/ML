@@ -136,39 +136,76 @@ def segmentV_speed_single(df):
 
 
 def length_total(df):
-    "Length of completed neurons (w/ duplicates)"
+    "Length of completed neurons"
     
     length = []
     # Iterate over dataframe
     for index, row in df.iterrows():        
-        # do if neuron is completed and length is annotated    
-        if row['Annotator Progress'] == 'Completed' and \
-        not np.isnan(row['Length (mm)']):  
-            # add length to list
-            length.append(row['Length (mm)'])
+        
+        # if same neuron (sequential) 
+        if df.iloc[index]['Neuron Name'] == df.iloc[index-1]['Neuron Name']:
+            # do if neuron is completed and length is annotated    
+            if row['Neuron Status'] == 'Completed' and not np.isnan(row['Length (mm)']):  
+                # add length to list
+                length.append(row['Length (mm)'])
+                
     # calculation
     total_len, length_avg, neuron_n = sum(length), np.average(length), len(length)
-    # list of total length, length average, and neuron number
-    return total_len, length_avg, neuron_n
+    
+    # [total length, length average, and neuron number], [list of length values]
+    return [total_len, length_avg, neuron_n], length
 
 
 def neuron_status(df):
-    'Counts number of incomplete/untraceable Neuron Status'
+    'Counts number of complete and incomplete/untraceable Neuron Status'
     
-    incomplete, untraceable = 0, 0
+    complete, incomplete_untraceable = 0, 0
     # Iterate over dataframe
     for index, row in df.iterrows():  
         
         # if same neuron (sequential) 
-        if df.iloc[index-1]['Neuron Name'] == df.iloc[index]['Neuron Name']:
-        
-            # check neuron status and if it has speed annotated
-            if row['Neuron Status'] == 'Incomplete':
-                incomplete +=1
-            if row['Neuron Status'] == 'Untraceable':
-                untraceable +=1
+        if df.iloc[index]['Neuron Name'] == df.iloc[index-1]['Neuron Name']:     
+            # check neuron status
+            if df.iloc[index]['Neuron Status'] == 'Completed':
+                complete +=1
+            if df.iloc[index]['Neuron Status'] == 'Incomplete':
+                incomplete_untraceable +=1
+            if df.iloc[index]['Neuron Status'] == 'Untraceable':
+                incomplete_untraceable +=1
 
-    return incomplete, untraceable
+    return [complete, incomplete_untraceable]
+
+
+def graph_sample(df):
+    'Graphs complete/incomplete neurons, total and segment version avg. speed, total lengths,\
+    compartments pie chart.'
+    
+    # Get complete/incomplete neurons
+    status = neuron_status(df)
+    # Get segment speeds
+    toss, segment_speeds = segmentV_speed_single(df)
+    
+    # Graph neuron status
+    plt.subplot(1,2,1)
+    plt.title('Neuron Status')
+    def make_autopct(status):
+        def my_autopct(pct):
+            total = sum(status)
+            val = int(round(pct*total/100.0))
+            return '{p:.1f}%  ({v:d})'.format(p=pct,v=val)
+        return my_autopct
+    plt.pie(status, labels= ['Completed','Incomplete/Untraceable'], autopct= make_autopct(status), colors= {'tab:green','tab:red'})
+    # Graph segment speed
+    plt.subplot(1,2,2)
+    plt.title('Segment Speed')
+    plt.boxplot(segment_speeds, labels= ['Man','Assist. Man','Frags','Assist. Frags'], meanline=True, showmeans=True)
+    
+    
+    plt.show()
+    plt.close()
+    
+    return
+    
 
 
 # =============================================================================
